@@ -2,7 +2,10 @@ package com.boat.controller;
 
 import java.io.IOException;
 
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +19,8 @@ public class BoatController {
 	
 	@Autowired
 	BoatService boatservice;
+	@Autowired
+	BoatLog boatlog;
 	 /**
      * GetMapping for the Boat event data.
      * @return
@@ -24,10 +29,17 @@ public class BoatController {
     @GetMapping("/event")
     public String post() throws IOException {
         	
-    	boatservice.BoatEventData();
-        return "Published successfully";
+    	return (boatservice.BoatEventData());
+//        return "Published  event data successfully";
             
     } 
+    
+  @GetMapping("/stopboat")
+  public String stopBoat() throws IOException {
+  	
+  	System.out.println(boatservice.stopBoatDynamics());
+  	return "stopped  Sucessfully";
+  }
     
     
     @GetMapping("/publishboat")
@@ -43,14 +55,37 @@ public class BoatController {
      * @param vehicle
      * @return
      */
+    @CrossOrigin
     @PostMapping("/boat/post")
-    public String postController(@RequestBody BoatLog vehicle)
+    public String postController(@RequestBody String vehicle)
     {
-        System.out.println("in post");
-        boatservice.vehicleRegister(vehicle);
+    	Object file = JSONValue.parse(vehicle);
+        JSONObject jsonObjectdecode = (JSONObject)file;
+        String hin=(String)jsonObjectdecode.get("hid");
         
-        return"sucessfully posted"; 
-        
+    	System.out.println(hin);
+    	
+    	if(hin.isEmpty()) {
+    		return "please enter details";
+    	}
+    	else {
+    		System.out.println("im in else");
+    		String name=(String)jsonObjectdecode.get("name");
+            String model=(String)jsonObjectdecode.get("model");
+            String noOfEngines=(String)jsonObjectdecode.get("noOfEngines");
+            Integer noe = Integer.valueOf(noOfEngines);
+            boatlog.setHid(hin);
+            boatlog.setModel(model);
+            boatlog.setName(name);
+            boatlog.setNoOfEngines(noe);
+         
+//        System.out.println(boatlog);
+            boatservice.vehicleRegister(boatlog);
+       
+            return"sucessfully posted";
+       
+          }
+    	
     }
 
 	

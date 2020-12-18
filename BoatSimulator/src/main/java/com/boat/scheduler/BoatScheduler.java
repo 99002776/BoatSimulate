@@ -12,6 +12,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.boat.service.BoatService;
+
  
 
 
@@ -22,8 +24,8 @@ import org.springframework.stereotype.Component;
        
         Logger logger = LoggerFactory.getLogger(BoatScheduler.class);
 
-//        @Autowired
-//        BoatService boatService;
+        @Autowired
+        BoatService boatService;
            
 //         @Scheduled(initialDelayString="${TIMEOUT_SCHEDULER_INTIAL_DELAY}",
 //                 fixedRateString="${TIMEOUT_SCHEDULER_DELAY}")
@@ -31,13 +33,13 @@ import org.springframework.stereotype.Component;
 //         /**
 //          * pushBoatData generates random data for boat.
 //          * @throws IOException
-////          */
+//          */
 //         public void pushBoatData() throws IOException {
 //             
 //           System.out.println(boatService.pushBoatDynamics()); 
 //             
 //         }
-//     
+     
       
         
         

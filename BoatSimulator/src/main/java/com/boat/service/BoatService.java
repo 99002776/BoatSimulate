@@ -46,15 +46,17 @@ public class BoatService {
  * BoatEventData generates boat event data for consumer
  * @throws IOException
  */
-	public void BoatEventData() throws IOException {
+	public String BoatEventData() throws IOException {
 		// TODO Auto-generated method stub
-	
+		BoatLog vehicle=vehicleMap.get(hin);
+		if(vehicle!=null) {
 		BoatEvent boatevent = new BoatEvent();
 		boatutil.readDataFromExcel(boatevent);
 		boatevent.setAltitude(boatutil.getRandomNumber(755,765));
 		boatevent.setBatterychargestatus(20);
 		boatevent.setHeading(boatutil.getRandomNumber(-180,180));
-		boatevent.setHin(boatutil.getAlphaNumericString(12));
+		//boatevent.setHin(boatutil.getAlphaNumericString(12));
+		boatevent.setHin(vehicle.getHid());
 		boatevent.setIdle(false);
 		boatevent.setIgnitionstatus(true);
 		boatevent.setLightstatus(false);
@@ -65,6 +67,12 @@ public class BoatService {
         String strDate = sdf.format(now);
         boatevent.setTimestamp(strDate);
         kafkaTemplateEvent.send(TOPICS,boatevent);
+        return "event data published";
+		}
+		else {
+			
+			return "no vehicle to publish eventdata";
+		}
 		
 	}
 
@@ -125,6 +133,15 @@ public class BoatService {
 		vehicleMap.put(vehicle.getHid(), vehicle);
 		 kafkaTemplateVehicle.send(VTOPICS,vehicle);
 		
+	}
+
+
+
+	public String stopBoatDynamics() {
+		System.out.println(hin);
+		vehicleMap.remove(hin);
+		// TODO Auto-generated method stub
+		return "boat simulation stopped ";
 	}
 
 
